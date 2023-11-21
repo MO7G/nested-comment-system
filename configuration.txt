@@ -1,0 +1,2 @@
+the server must run on port 3000
+the client must run on port 3001

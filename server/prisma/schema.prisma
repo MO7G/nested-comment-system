@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id      String    @id @default(uuid()) // Universally Unique Identifier
+  title   String
+  body    String
+  comment Comment[]
+}
+
+model User {
+  id       String    @id @default(uuid())
+  name     String
+  comments Comment[]
+  Like     Like[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // will update the time when you update 
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  children Comment[] @relation("ParentChild")
+  parent   Comment?  @relation("ParentChild", fields: [parentId], references: [id] ,  onDelete: Cascade)
+  parentId String?
+  Likes    Like[]  
+}
+
+model Like {
+  user      User    @relation(fields: [userId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id])
+  userId    String
+  commentId String
+  
+  // composite key a user can only like a comment once 
+  @@id([userId, commentId])
+}
