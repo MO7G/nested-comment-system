@@ -14,7 +14,7 @@ model Post {
   id      String    @id @default(uuid()) // Universally Unique Identifier
   title   String
   body    String
-  comment Comment[]
+  comments Comment[]
 }
 
 model User {

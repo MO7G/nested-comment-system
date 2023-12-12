@@ -7,9 +7,7 @@ export function PostList() {
     const { loading, error, value: posts } = useAsync(getPosts, []);
     if(loading) return <h1>We are Loading </h1>
     if(error) return <h1 className="error-msg">This is error </h1>
-    console.log(loading);
-    console.log(error);
-    console.log(posts);
+    
     return posts.map(post => {
         return (
             <h1 key={post.id}>

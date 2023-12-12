@@ -31,7 +31,7 @@ function useAsyncInternal(func,dependencies,intialLoading=false){
             return data;
         })
         .catch(error=>{
-            console.log("error from inside the function ")
+            console.error("This is error from the useAsyncInternal ya hajji")
             setError(error);
             setValue(undefined);
             return Promise.reject(error);
