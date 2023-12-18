@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { getPost } from "../services/posts";
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const PostContext = React.createContext();
 
 
@@ -15,7 +15,7 @@ export function PostProvider({ children }) {
     const { loading, error, value: post } = useAsync(() => getPost(postId), [postId]);
     const [comments,setComment] = useState([])
     const [isThereAnyReplyActive, setIsThereAnyReplyActive] = useState(false); // New state variable
-    
+    const navigate = useNavigate();
     const commentsByParrentId = useMemo(() => {
         // making an empty group intially 
         const group = {}
@@ -55,10 +55,13 @@ export function PostProvider({ children }) {
             return [comment,...prevComments]
         })
     }
-
+    if (error) {
+        navigate("/*");
+        return null; 
+    }
 
     if (loading) return <h1>Fetching comments</h1>
-    if (error) return <h1 className="error-msg">something went wrong while fetching the comment</h1>
+
     return (
         <PostContext.Provider value={{ post: { postId, ...post }, getReplies, rootComments: commentsByParrentId[null],createLocalComment, isThereAnyReplyActive,setIsThereAnyReplyActive }}>
             {children}

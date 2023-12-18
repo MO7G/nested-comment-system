@@ -34,7 +34,8 @@ function useAsyncInternal(func,dependencies,intialLoading=false){
             console.error("This is error from the useAsyncInternal ya hajji")
             setError(error);
             setValue(undefined);
-            return Promise.reject(error);
+            // Return a resolved promise with a default value to prevent the entire chain from being rejected
+            return Promise.resolve("404"); 
         })
         .finally(()=>{
             setLoading(false);

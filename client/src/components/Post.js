@@ -4,7 +4,7 @@ import { CommentForm } from "./CommentForm";
 import { useAsyncFn } from "../hooks/useAsync";
 import { createComment } from "../services/comments";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 export function Post() {
     const { post, rootComments, createLocalComment } = usePost();
@@ -12,9 +12,15 @@ export function Post() {
     const [isReplyActive, setIsReplyActive] = useState(false);
     const [isThereAnyReplyActive, setIsThereAnyReplyActive] = useState(false);
     const [activeReplyId, setActiveReplyId] = useState(null);
+    const navigate = useNavigate();
     const handleReplyToggle = (commentId) => {
         setActiveReplyId((prev) => (prev === commentId ? null : commentId));
     };
+
+    if(error){
+        console.log("yah")
+        navigate('/posts')
+    }
 
 
 

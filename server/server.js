@@ -53,8 +53,6 @@ if(allUsers === 0){
 app.addHook("onRequest", (req,res,done)=>{
   createRandomUser()
   let userId = req.cookies.userId
-  console.log("the current user is in this id ", userId )
-  console.log("the fake user is  " , FAKE_USER_ID)
   if(userId !== FAKE_USER_ID){
     userId = FAKE_USER_ID
     res.clearCookie("userId")
@@ -119,7 +117,7 @@ const COMMENT_SELECT_FIELDS ={
 app.get("/posts/:id", async (req, res) => {
   let postId = req.params.id;
   console.log("this is the post id from route /posts/:id" , postId);
-  return await commitToDb(
+  let result =  await commitToDb(
     prisma.post.findUnique({
       where: {id:postId},
       select:{
@@ -134,6 +132,11 @@ app.get("/posts/:id", async (req, res) => {
       }
     })
     )
+    if(!result){
+        // Post not found, return a 404 error
+        return res.send(app.httpErrors.notFound("Post not found"));
+    }
+    return result
 });
 
 app.post("/posts/:id/comments", async(req,res)=>{

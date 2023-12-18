@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: "Courier New", "Courier", monospace;
-  font-family: "Lucida Console", "Monaco", monospace;
+  font-family: "Lucida Console", "Monaco", monospace !important;
   background-color: #0b090a;
 }
 
