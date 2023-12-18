@@ -6,7 +6,7 @@ import { FaEdit, FaHeart, FaReply, FaTractor, FaTrash } from "react-icons/fa"
 import { CommentForm } from "./CommentForm";
 import { useAsync, useAsyncFn } from "../hooks/useAsync";
 import { FaLevelDownAlt } from "react-icons/fa";
-
+import Skeleton from "react-loading-skeleton";
 
 import { createComment } from "../services/comments";
 const dateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" })
@@ -40,18 +40,16 @@ export function Comment({ id, user, createdAt, message, onReplyToggle, activeRep
         console.log("the activeReplyId opened is  ", activeReplyId);
 
     };
-
+    
     return (
         <>
-          {/*  <button onClick={() => showInfo()}>see the state of isreplay</button>*/}
-            {/*<button onClick={() => setIsThereAnyReplyActive((prev) => !prev)}>toggle me</button>*/}
-
             <div className="comment">
                 <div className="header">
-                    <div className="name">{user.name}</div>
-                    <div className="date">{dateFormatterHelper(createdAt)}</div>
+                    
+                    <div className="name">{user.name || <Skeleton width={"520px"} height={"150px"} count={1} /> }</div>
+                    <div className="date">{dateFormatterHelper(createdAt)  || <Skeleton width={"520px"} height={"150px"} count={1} /> }</div>
                 </div>
-                <div className="message">{message}</div>
+                <div className="message">{message  || <Skeleton width={"520px"} height={"150px"} count={1} /> }</div>
                 <div className="footer">
                     <IconsBtn Icon={FaHeart} aria-label="Like">
                         2

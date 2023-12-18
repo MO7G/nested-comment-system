@@ -1,5 +1,5 @@
 import { makeRequest } from "./makeRequest";
-const delay = 0;
+const delay = 2;
 export function getPosts(){
     return makeRequest("/posts" , {} , delay);
 }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 export function useAsync(func,dependencies=[]){
  const {execute, ...state} = useAsyncInternal(func,dependencies,true);
  useEffect(()=>{
+   
     execute();
  },[execute])
 
@@ -18,6 +19,7 @@ export function useAsyncFn(func,dependencies=[]){
 
 // this is going to be called by the useAsync or useAsyncFn
 function useAsyncInternal(func,dependencies,intialLoading=false){
+    console.log("the intial loading is " , intialLoading)
     const [loading,setLoading] = useState(intialLoading);
     const [error,setError] = useState();
     const [value,setValue] = useState();
