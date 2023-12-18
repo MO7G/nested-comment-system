@@ -7,3 +7,11 @@ export function createComment({postId,message,parentId}){
         data:{message,parentId},
     })
 }
+
+export function updateComment({postId,message,commentId}){
+    console.log("this is the post id from inside " , postId)
+    return makeRequest(`posts/${postId}/comments/${commentId}`,{
+        method:"PUT",
+        data:{message},
+    })
+}

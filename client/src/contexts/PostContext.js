@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { getPost } from "../services/posts";
 import { useParams } from "react-router-dom";
@@ -13,38 +13,54 @@ export function usePost() {
 export function PostProvider({ children }) {
     const { postId } = useParams();
     const { loading, error, value: post } = useAsync(() => getPost(postId), [postId]);
-
+    const [comments,setComment] = useState([])
+    const [isThereAnyReplyActive, setIsThereAnyReplyActive] = useState(false); // New state variable
+    
     const commentsByParrentId = useMemo(() => {
         // making an empty group intially 
         const group = {}
+        
 
         // checking if the post was retrieved or not yet from the server 
-        if (post?.comments == null) {
+        if (comments == null) {
             // return empty array for now 
             return ["empy-post-comment"]
         }
 
 
-        post.comments.forEach((comment, index) => {
-
+        comments.forEach((comment, index) => {
             // checking if the parrentId exists in the group or not in case not then we will just assign an empty array in case it exists we will not change anything
             group[comment.parentId] ||= []
             group[comment.parentId].push(comment)
-
         })
-
         return group
-    }, [post])
+    }, [comments])
+
+    
+
+    useEffect(()=>{
+        if(post?.comments == null){
+            return;
+        }else{
+            setComment(post.comments);
+        }
+    },[post?.comments])
     
     const getReplies = (parentId) => {
         return commentsByParrentId[parentId];
+    }
+    
+    function createLocalComment(comment) {
+        setComment(prevComments=>{
+            return [comment,...prevComments]
+        })
     }
 
 
     if (loading) return <h1>Fetching comments</h1>
     if (error) return <h1 className="error-msg">something went wrong while fetching the comment</h1>
     return (
-        <PostContext.Provider value={{ post: { postId, ...post }, getReplies, rootComments: commentsByParrentId[null] }}>
+        <PostContext.Provider value={{ post: { postId, ...post }, getReplies, rootComments: commentsByParrentId[null],createLocalComment, isThereAnyReplyActive,setIsThereAnyReplyActive }}>
             {children}
         </PostContext.Provider>
     )

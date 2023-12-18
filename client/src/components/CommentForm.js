@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export function CommentForm({ loading, error , onSubmit, autoFocusStatus=false,intialValue="" }) {
+export function CommentForm({ loading, error, onSubmit, autoFocusStatus = false, intialValue = "" }) {
     const [message, setMessage] = useState("")
 
 
@@ -13,11 +13,11 @@ export function CommentForm({ loading, error , onSubmit, autoFocusStatus=false,i
     const handleSubmit = (e) => {
         e.preventDefault()
         onSubmit(message)
-        .then(()=>setMessage(''))
-        .catch((error)=>{
-            
-            console.error("this is error is from the onSubmit in the commentForm ya hajji")
-        })
+            .then(() => setMessage(''))
+            .catch((error) => {
+
+                console.error("this is error is from the onSubmit in the commentForm ya hajji")
+            })
     }
 
     return (
@@ -27,6 +27,7 @@ export function CommentForm({ loading, error , onSubmit, autoFocusStatus=false,i
                 <button className="btn" type="submit" disabled={loading}>{loading ? "Loading" : "Post"}</button>
             </div>
             <div className="error-msg">{error}</div>
+
         </form>
     )
 }

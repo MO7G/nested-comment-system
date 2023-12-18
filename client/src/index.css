@@ -4,8 +4,9 @@
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.4;
+  font-family: "Courier New", "Courier", monospace;
+  font-family: "Lucida Console", "Monaco", monospace;
+  background-color: #0b090a;
 }
 
 .container {
@@ -23,13 +24,42 @@ button {
   color: hsl(0, 100%, 67%);
 }
 
+.post-content {
+  background-color: #1d1d1d;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.post-content h1{
+  color: #a4161a;
+}
+.post-content article{
+  color: #f5f3f4;
+}
+
+.post-content h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.post-content article {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+
+
+
 .comments-title {
   margin-bottom: .5rem;
+  color: #e5383b;
 }
 
 .comment-form-row {
   display: flex;
   gap: .5rem;
+  
 }
 
 .message-input {
@@ -40,12 +70,12 @@ button {
   padding: .5em;
   font-size: inherit;
   font-family: inherit;
-  border: 2px solid hsl(235, 50%, 74%);
+  border: 2px solid hsl(233, 90%, 4%);
   line-height: 1.4;
 }
 
 .message-input:focus {
-  border-color: hsl(235, 100%, 67%);
+  border-color: hsl(0, 0%, 0%);
   outline: none;
 }
 
@@ -59,10 +89,13 @@ button {
 
 .comment-stack {
   margin: .5rem 0;
+  color: #ffffff;
+
 }
 
 .comment-stack:last-child {
   margin-bottom: 0;
+  
 }
 
 .nested-comments {
@@ -84,11 +117,16 @@ button {
   cursor: pointer;
   outline: none;
   transform: translateX(-50%);
+  /* Additional styles */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .collapse-line:hover::before,
 .collapse-line:focus-visible::before {
-  background-color: hsl(235, 100%, 60%);
+  background-color: #660708;
+  transition: all 0.4s;
 }
 
 .collapse-line::before {
@@ -98,8 +136,41 @@ button {
   bottom: 0;
   left: 50%;
   width: 1px;
-  background-color: hsl(235, 50%, 74%);
+  background-color: #ffffff;
   transition: background-color 100ms ease-in-out;
+}
+
+/* Additional styles for the new elements */
+.collapse-line .line-top,
+.collapse-line .line-bottom {
+  height: 1px;
+  width: 100%;
+  background-color: #ffffff;
+  transition: background-color 100ms ease-in-out;
+}
+
+.collapse-line:hover .line-top,
+.collapse-line:focus-visible .line-top,
+.collapse-line:hover .line-bottom,
+.collapse-line:focus-visible .line-bottom {
+  background-color: #660708;
+  transition: all 0.4s;
+}
+
+/* YourComponent.css */
+
+.show-nested-comment {
+  color: #a4161a;
+  font-size: 15px; /* Example: set font size */
+  margin: 3px;
+  /* Add any other styles you need */
+}
+
+.show-nested-comment:hover {
+  color: #ffffff;
+  transition: all 1s;
+
+    cursor: pointer; /* Example: add a pointer cursor on hover */
 }
 
 .hide {
@@ -107,12 +178,10 @@ button {
 }
 
 .btn {
-  --hue: 235;
-  --color: hsl(var(--hue), 100%, 67%);
   padding: .5em 1em;
-  background: var(--color);
   border: none;
-  color: white;
+  background-color: #660708;
+  color: #ffffff;
   border-radius: .5em;
   font-size: .75em;
   cursor: pointer;
@@ -120,12 +189,14 @@ button {
 
 .btn:hover,
 .btn:focus-visible {
-  --color: hsl(var(--hue), 100%, 74%);
+  background-color: #ffffff;
+  color: #660708;
+  transition: all 0.6s;
 }
 
 .btn.icon-btn {
   background: none;
-  color: var(--color);
+  color: #a4161a;
   padding: .25em;
   display: flex;
   align-items: center;
@@ -137,7 +208,9 @@ button {
 
 .icon-btn:hover,
 .icon-btn:focus-visible {
-  --color: hsl(var(--hue), 100%, 74%);
+  color: #f5f3f4;
+  transition: all 0.45s;
+
 }
 
 .icon-btn-active,
@@ -145,6 +218,9 @@ button {
   --hue: 0;
 }
 
+.temp{
+  color: red;
+}
 .icon-btn-active {
   position: relative;
 }
@@ -164,26 +240,39 @@ button {
 
 .comment {
   padding: .5rem;
-  border: 1px solid hsl(235, 100%, 90%);
+  border: 0.5px solid #b1a7a6;
   border-radius: .5rem;
+  background-color: #1d1d1d;
+  
+}
+.comment:hover{
+  background-color: #1d1d1d;
 }
 
 .comment .header {
-  color: hsl(235, 50%, 67%);
+  color: #840032;
   display: flex;
   justify-content: space-between;
   margin-bottom: .25rem;
   font-size: .75em;
+  
 }
 
 .comment .header .name {
   font-weight: bold;
+  color: #e5383b;
+}
+
+.comment .header .date{
+  color: #ffffff;
 }
 
 .comment .message {
   white-space: pre-wrap;
   margin-left: .5rem;
   margin-right: .5rem;
+  color: #f5f3f4;
+  
 }
 
 .comment .footer {
