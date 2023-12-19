@@ -15,9 +15,10 @@ export function usePost() {
 export function PostProvider({ children }) {
     const { postId } = useParams();
     const { loading, error, value: post } = useAsync(() => getPost(postId), [postId]);
-    const [comments, setComment] = useState([])
+    const [comments, setComments] = useState([])
     const [isThereAnyReplyActive, setIsThereAnyReplyActive] = useState(false); // New state variable
     const navigate = useNavigate();
+
     const commentsByParrentId = useMemo(() => {
         // making an empty group intially 
         const group = {}
@@ -38,13 +39,11 @@ export function PostProvider({ children }) {
         return group
     }, [comments])
 
-
-
     useEffect(() => {
         if (post?.comments == null) {
             return;
         } else {
-            setComment(post.comments);
+            setComments(post.comments);
         }
     }, [post?.comments])
 
@@ -53,20 +52,36 @@ export function PostProvider({ children }) {
     }
 
     function createLocalComment(comment) {
-        setComment(prevComments => {
+        setComments(prevComments => {
             return [comment, ...prevComments]
         })
     }
-    
+
+    function updateLocalComment(id,message) {
+        setComments(prevComments => {
+            return prevComments.map(comment=>{
+                if(comment.id === id){
+                    return {...comment,message}
+                }else{
+                    return comment;
+                }
+            })
+        })
+    }
+
+    function deleteLocalComment(id){
+        setComments(prevComments=>{
+            return prevComments.filter(comment => comment.id !== id)
+        })
+    }
     if (error) {
         navigate("/*");
         return null;
     }
 
-    if (loading) return <h1>Fetching comments</h1>
 
     return (
-        <PostContext.Provider value={{ post: { postId, ...post }, getReplies, rootComments: commentsByParrentId[null], createLocalComment, isThereAnyReplyActive, setIsThereAnyReplyActive }}>
+        <PostContext.Provider value={{ post: { postId, ...post }, deleteLocalComment , getReplies, updateLocalComment, rootComments: commentsByParrentId[null], createLocalComment, isThereAnyReplyActive, setIsThereAnyReplyActive }}>
             {children}
         </PostContext.Provider>
     )

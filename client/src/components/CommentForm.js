@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 export function CommentForm({ loading, error, onSubmit, autoFocusStatus = false, intialValue = "" }) {
-    const [message, setMessage] = useState("")
+    const [message, setMessage] = useState(intialValue)
 
 
     //Todo: sanitize the comments from potential sql injections or xss scripts  and check for maximum comment length
@@ -15,10 +15,11 @@ export function CommentForm({ loading, error, onSubmit, autoFocusStatus = false,
         onSubmit(message)
             .then(() => setMessage(''))
             .catch((error) => {
-
                 console.error("this is error is from the onSubmit in the commentForm ya hajji")
-            })
-    }
+            })}
+
+
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -27,7 +28,6 @@ export function CommentForm({ loading, error, onSubmit, autoFocusStatus = false,
                 <button className="btn" type="submit" disabled={loading}>{loading ? "Loading" : "Post"}</button>
             </div>
             <div className="error-msg">{error}</div>
-
         </form>
     )
 }

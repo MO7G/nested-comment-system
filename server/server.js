@@ -20,7 +20,6 @@ const app = fastify();
 app.register(sensible);
 
 
-app.register(cookies, {secret:process.env.COOKIE_SECRET})
 // create prisma client 
 const prisma = new PrismaClient();
 
@@ -41,6 +40,7 @@ function createRandomUser(){
   const randomUserIndex = Math.floor(Math.random() * allUsers.length);
   const randomUser = allUsers[randomUserIndex];
   // Assign the random user's id as FAKE_USER_ID
+  console.log(randomUser)
   FAKE_USER_ID = randomUser.id;
 }
 
@@ -50,16 +50,12 @@ if(allUsers === 0){
   createRandomUser()
 }
 //TODO: later i want to bring an array of all users and each time i will make a different fake user for commenting part only !!
-app.addHook("onRequest", (req,res,done)=>{
-  createRandomUser()
-  let userId = req.cookies.userId
-  if(userId !== FAKE_USER_ID){
-    userId = FAKE_USER_ID
-    res.clearCookie("userId")
-    res.setCookie("userId",FAKE_USER_ID)
-  }
-  done()
-})
+app.addHook("onRequest", (req, res, done) => {
+  createRandomUser();
+  done();
+});
+
+
 
 
 
@@ -73,7 +69,7 @@ app.get("/", async (req, res) => {
 app.post("/temp", async (req, res) => {
   // Extracting values from the JSON body of the request
   const { postId, parentId, userId, message } = req.body;
-  console.log(req.body)
+
   try {
     await addCommentToPost(postId, parentId, userId, message); // Make sure addCommentToPost is an async function or returns a promise
     const htmlResponse = "<h1>Comment was added successfully</h1>";
@@ -88,7 +84,7 @@ app.post("/temp", async (req, res) => {
 
 
 app.get("/posts", async (req, res) => {
-  console.log("i am called")
+
   let queryResult = await commitToDb(
     prisma.post.findMany({
       select: {
@@ -116,7 +112,7 @@ const COMMENT_SELECT_FIELDS ={
 
 app.get("/posts/:id", async (req, res) => {
   let postId = req.params.id;
-  console.log("this is the post id from route /posts/:id" , postId);
+
   let result =  await commitToDb(
     prisma.post.findUnique({
       where: {id:postId},
@@ -141,12 +137,12 @@ app.get("/posts/:id", async (req, res) => {
 
 app.post("/posts/:id/comments", async(req,res)=>{
   const bodyMessage = req.body.message
-  const bodyUserId = req.cookies.userId
+  const bodyUserId = FAKE_USER_ID
   const bodyParentId = req.body.parentId
   const paramsPostId =  req.params.id 
 
 
-  console.log("this is the req body " , req.body)
+
   if(bodyMessage == null || bodyMessage == ""){
     return res.send(app.httpErrors.badRequest("Message is required"));
   }
@@ -168,46 +164,54 @@ app.post("/posts/:id/comments", async(req,res)=>{
 
 
 app.put("/posts/:postId/comments/:commentId", async (req, res) => {
-  const bodyMessage = req.body.message;
-  const commentId = req.params.commentId;
-  const postId = req.params.postId;
-
-
-  if (bodyMessage == null || bodyMessage === "") {
-    return res.send(app.httpErrors.badRequest("Message is required"));
+  if (req.body.message === "" || req.body.message == null) {
+    return res.send(app.httpErrors.badRequest("Message is required"))
   }
+  
+  const { comment } = await prisma.comment.findUnique({
+    where: { id: req.params.commentId },
+    select: { userId: true },
+  })
 
-  try {
-    // Retrieve the comment by commentId
-    const existingComment = await prisma.comment.findUnique({
-      where: { id: commentId },
-    });
-    // if the comment doesn't exist or something 
-    if (!existingComment) {
-      return res.send(app.httpErrors.notFound("Comment not found"));
-    }
 
-    // Update the comment with the new message
-    const updatedComment = await prisma.comment.update({
-      where: { id: commentId },
-      data: { message: bodyMessage },
-    });
-    
-    // Send a response indicating success
-    return res.send({ success: true, message: "Comment updated successfully" });
 
-  } catch (error) {
-    console.error("Error updating comment:", error);
-    return res.send(app.httpErrors.internalServerError("Failed to update comment"));
-  }
-});
+  let result =  await commitToDb(
+    prisma.comment.update({
+      where: { id: req.params.commentId },
+      data: { message: req.body.message },
+      select: { message: true },
+    })
+  )
+
+  return result;
+})
+
+
+app.delete("/posts/:postId/comments/:commentId", async (req, res) => {
+  
+  const { comment } = await prisma.comment.findUnique({
+    where: { id: req.params.commentId },
+    select: { userId: true },
+  })
+
+
+  let result =  await commitToDb(
+    prisma.comment.delete({
+      where: { id: req.params.commentId },
+      select: { id: true },
+    })
+  )
+
+  return result;
+})
+
 
 
 //Simple  custom function error handling
 async function commitToDb(promise) {
   const [error, data] = await app.to(promise);
   if (error){
-    console.log("error in the commitToDb function " , error)
+
     return app.httpErrors.internalServerError(error.message);}
   return data;
 }

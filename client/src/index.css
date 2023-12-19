@@ -9,6 +9,9 @@ body {
   background-color: #0b090a;
 }
 
+.special-h1{
+  color: white;
+}
 .container {
   max-width: 1200px;
   width: calc(100vw - 4rem);
@@ -64,6 +67,7 @@ button {
 
 .message-input {
   flex-grow: 1;
+  color: black;
   resize: none;
   height: 70px;
   border-radius: .5em;

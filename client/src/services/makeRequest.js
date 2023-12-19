@@ -7,7 +7,7 @@ const api = axios.create({
 
 
 
-    export function makeRequest(url, options,delay=5){
+    export function makeRequest(url, options,delay=0){
         const doMakeRequest=() =>{
             return api(url,options)
             .then(res=>res.data)
@@ -20,7 +20,6 @@ const api = axios.create({
         if(delay === 0){
         return  doMakeRequest();
         }else{
-        console.log("i am inside")
         return new Promise((resolve,reject)=>{
                 setTimeout(() => {
                     doMakeRequest()

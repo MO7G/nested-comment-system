@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { isRouteErrorResponse } from "react-router-dom";
 
 // This going to be called automatically
 export function useAsync(func,dependencies=[]){
@@ -19,7 +20,6 @@ export function useAsyncFn(func,dependencies=[]){
 
 // this is going to be called by the useAsync or useAsyncFn
 function useAsyncInternal(func,dependencies,intialLoading=false){
-    console.log("the intial loading is " , intialLoading)
     const [loading,setLoading] = useState(intialLoading);
     const [error,setError] = useState();
     const [value,setValue] = useState();
@@ -37,7 +37,7 @@ function useAsyncInternal(func,dependencies,intialLoading=false){
             setError(error);
             setValue(undefined);
             // Return a resolved promise with a default value to prevent the entire chain from being rejected
-            return Promise.resolve("404"); 
+            return Promise.reject(error)
         })
         .finally(()=>{
             setLoading(false);
